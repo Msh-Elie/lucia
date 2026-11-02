@@ -61,7 +61,7 @@
       line-height: 0;
     }
 
-    /* ─── IMAGE AFFICHÉE EN ENTIER (plus de recadrage) ─── */
+    /* ─── IMAGE AFFICHÉE EN ENTIER + 10% plus large ─── */
     .cover img.cover-photo {
       position: absolute;
       inset: 0;
@@ -69,6 +69,8 @@
       object-fit: contain;
       object-position: center;
       background: #000;
+      transform: scaleX(1.1);
+      transform-origin: center;
     }
 
     .cover::after {
