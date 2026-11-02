@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="viewport-fit=cover, width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Lucia</title>
+  <meta name="description" content="Discover my profile.">
+  <meta name="theme-color" content="#000000">
+
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100%;
+      background: #000;
+      font-family: Arial, sans-serif;
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    .page {
+      min-height: 100vh;
+      position: relative;
+      padding-top: 1rem;
+      padding-bottom: 2rem;
+      background: #000;
+    }
+
+    .bg-blur {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      filter: blur(30px) brightness(0.4);
+      pointer-events: none;
+      user-select: none;
+      z-index: 0;
+      transform: scale(1.05);
+    }
+
+    .card {
+      position: relative;
+      z-index: 10;
+      width: 420px;
+      max-width: 95vw;
+      margin: 0 auto;
+      background: #000;
+      border-radius: 24px;
+      overflow: hidden;
+      min-height: 80vh;
+    }
+
+    .cover {
+      position: relative;
+      height: 295px;
+      overflow: hidden;
+      line-height: 0;
+    }
+
+    /* ─── IMAGE AFFICHÉE EN ENTIER (plus de recadrage) ─── */
+    .cover img.cover-photo {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: contain;
+      object-position: center;
+      background: #000;
+    }
+
+    .cover::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top,
+        #000 0%,
+        rgba(0,0,0,0.92) 5%,
+        rgba(0,0,0,0.75) 15%,
+        rgba(0,0,0,0.4) 30%,
+        transparent 55%
+      );
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .cover-info {
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 100%;
+      padding: 0 16px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 3;
+    }
+
+    .cover-name-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .cover-name-row h1 {
+      font-size: 46px;
+      font-family: Arial, sans-serif;
+      font-weight: 600;
+      color: #fff;
+      text-shadow: 2px 2px 19px rgba(11,11,11,1);
+      line-height: 1.1;
+    }
+
+    .blue-tick {
+      width: 24px; height: 24px;
+      object-fit: contain;
+      flex-shrink: 0;
+    }
+
+    .online-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #fff;
+      border-radius: 999px;
+      padding: 6px 16px 6px 12px;
+      margin: 0 0 26px;
+    }
+
+    .dot-wrap { position: relative; width: 12px; height: 12px; flex-shrink: 0; }
+    .dot {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgb(34,197,94);
+    }
+    .dot-ping {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: rgb(34,197,94);
+      opacity: 0.7;
+      animation: ping 2s cubic-bezier(0,0,0.8,1) infinite;
+    }
+    @keyframes ping {
+      0%   { transform: scale(1); opacity: 0.7; }
+      75%, 100% { transform: scale(2.2); opacity: 0; }
+    }
+    .online-badge span {
+      color: #1f2937;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .socials {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      padding: 0 16px 28px;
+    }
+
+    .social-btn {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      background: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      flex-shrink: 0;
+      transition: transform 0.15s;
+    }
+    .social-btn:hover { transform: scale(1.12); }
+    .social-btn img {
+      width: 18px; height: 18px;
+      object-fit: contain;
+      display: block;
+    }
+
+    .countdown-banner {
+      margin: 0 16px 20px;
+      background: linear-gradient(135deg, #111 0%, #1a1a1a 100%);
+      border: 1.5px solid #333;
+      border-radius: 20px;
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .countdown-left {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .countdown-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #ff4d4d;
+      white-space: nowrap;
+    }
+
+    .countdown-digits {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      flex-shrink: 0;
+    }
+
+    .cd-unit {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1px;
+    }
+
+    .cd-box {
+      background: #000;
+      border: 1.5px solid #333;
+      border-radius: 8px;
+      width: 38px;
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+      font-weight: 700;
+      font-variant-numeric: tabular-nums;
+      color: #fff;
+    }
+
+    .cd-label {
+      font-size: 8px;
+      color: #666;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+    }
+
+    .cd-sep {
+      font-size: 18px;
+      font-weight: 700;
+      color: #ff4d4d;
+      margin-bottom: 14px;
+      line-height: 1;
+    }
+
+    .links-grid {
+      padding: 0 16px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .link-card {
+      height: 180px;
+      position: relative;
+      border-radius: 46px;
+      overflow: hidden;
+      border: 3px solid rgb(126,126,126);
+      background: #111;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      display: block;
+      text-decoration: none;
+      /* ─── FIX MOBILE : force un vrai clipping du flou ─── */
+      isolation: isolate;
+      -webkit-mask-image: -webkit-radial-gradient(white, black);
+      transform: translateZ(0);
+      -webkit-transform: translateZ(0);
+    }
+
+    .link-card:hover {
+      transform: scale(1.02);
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+    }
+
+    .link-card img.card-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      object-position: center 100%;
+      transform: scale(1);
+      transition: filter 0.3s, transform 0.3s;
+      /* ─── FIX MOBILE : force l'image dans sa propre couche ─── */
+      transform-origin: center center;
+      will-change: filter, transform;
+    }
+
+    .link-card .card-gradient {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.5), transparent);
+      opacity: 0.8;
+      z-index: 1;
+      transition: filter 0.3s;
+    }
+
+    .link-card .card-text {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      z-index: 2;
+      padding-bottom: 14px;
+      text-align: center;
+      transition: filter 0.3s;
+    }
+
+    .link-card h3 {
+      font-size: 21px;
+      font-weight: 600;
+      color: #fff;
+    }
+
+    .link-card p {
+      font-size: 15px;
+      color: #d1d5db;
+      font-weight: 500;
+      margin-top: 4px;
+    }
+
+    /* ─── OVERLAY SENSIBLE ─── */
+    .sensitive-overlay {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      pointer-events: auto;
+    }
+
+    .sensitive-badge {
+      background: #000000;
+      color: #ffffff;
+      border-radius: 12px;
+      font-size: 14px;
+      font-weight: 500;
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: none;
+    }
+
+    .sensitive-badge svg { width: 16px; height: 16px; flex-shrink: 0; }
+
+    /* ─── ÉTAT FLOUTÉ ─── */
+    .link-card.revealed .card-bg {
+      filter: blur(12px);
+      transform: scale(1.15); /* pousse les bords flous hors du cadre */
+    }
+
+    .link-card.revealed .card-gradient,
+    .link-card.revealed .card-text {
+      filter: blur(12px);
+    }
+
+    .link-card.revealed .sensitive-overlay {
+      display: flex;
+    }
+
+    /* ─── ANIMATION SHAKE (carte OF uniquement) ─── */
+    @keyframes shake-attention {
+      0%, 100%      { transform: translateZ(0) rotate(0deg)    scale(1);     }
+      10%, 30%, 50% { transform: translateZ(0) rotate(-1.5deg) scale(1.015); }
+      20%, 40%, 60% { transform: translateZ(0) rotate(1.5deg)  scale(1.015); }
+      70%           { transform: translateZ(0) rotate(0deg)    scale(1);     }
+    }
+
+    .shake {
+      animation: shake-attention 2.5s ease-in-out infinite;
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    /* On coupe l'animation au survol et quand la carte est floutée */
+    .shake:hover,
+    .shake.revealed {
+      animation: none;
+      transform: translateZ(0) scale(1.02);
+    }
+
+    .page-footer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      font-size: 12px;
+      opacity: 0.15;
+      color: rgba(255,255,255,0.9);
+      padding: 20px 0 24px;
+    }
+    .page-footer a { color: inherit; text-decoration: underline; }
+
+    @media (max-width: 480px) {
+      .card { width: 100%; border-radius: 0; }
+      .cover-name-row h1 { font-size: 38px; }
+      .countdown-banner { padding: 8px 12px; gap: 8px; }
+      .cd-box { width: 34px; height: 34px; font-size: 18px; }
+      .cd-sep { font-size: 16px; margin-bottom: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="page">
+
+  <img
+    class="bg-blur"
+    src="assert/pp.jpeg"
+    alt=""
+  >
+
+  <div class="card">
+    <!-- COVER -->
+    <div class="cover">
+      <img
+        class="cover-photo"
+        src="assert/pp.jpeg"
+        alt="Lucia cover"
+      >
+      <div class="cover-info">
+        <div class="cover-name-row">
+          <h1>Lucia</h1>
+          <img
+            class="blue-tick"
+            src="https://assets.linkscale.to/icons/blue-tick/icon-blue-tick.png"
+            alt="verified"
+          >
+        </div>
+        <div class="online-badge">
+          <div class="dot-wrap">
+            <div class="dot-ping"></div>
+            <div class="dot"></div>
+          </div>
+          <span>Online</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SOCIALS -->
+    <div class="socials">
+      <a
+        class="social-btn"
+        href="https://www.instagram.com/sweet_luciaaaa?exln=MXEya3k1a2kydm13bg%3D%3D&utm_source=qr"
+        target="_blank" rel="nofollow noopener noreferrer"
+        aria-label="Instagram"
+      >
+        <img src="https://assets.linkscale.to/instagram-icon-color.png" alt="Instagram">
+      </a>
+
+    </div>
+
+
+    <!-- LINK CARDS -->
+    <div class="links-grid">
+
+
+         <!-- Card 1: Exclusive Content (avec animation shake) -->
+      <a
+        class="link-card sensitive-card shake"
+        href="https://onlyfans.com/sweet.luciaaaa/c182"
+        target="_blank" rel="nofollow noopener noreferrer"
+        data-label="OF"
+      >
+        <img
+          class="card-bg"
+          src="assert/exclusif.jpeg"
+          alt="Exclusive Content"
+          style="object-position: center 90%;"
+        >
+        <div class="card-gradient"></div>
+        <div class="card-text">
+          <h3>OF 🌶️</h3>
+          <p></p>
+        </div>
+
+        <div class="sensitive-overlay">
+          <div class="sensitive-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7A9.97 9.97 0 014.02 8.971m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+            </svg>
+            <span>Contenu sensible</span>
+          </div>
+        </div>
+      </a>
+
+      <!-- Card 2: Secret Garden (sans animation) -->
+      <a
+        class="link-card sensitive-card"
+        href="https://www.amateurx.com/?ACADID=18266374#/sedcard/Karen0"
+        target="_blank" rel="nofollow noopener noreferrer"
+        data-label="Mym"
+      >
+        <img
+          class="card-bg"
+          src="assert/secret.jpeg"
+          alt="Secret Garden"
+          style="object-position: center 100%;"
+        >
+        <div class="card-gradient"></div>
+        <div class="card-text">
+          <h3>LiveCreator 🔥</h3>
+          <p></p>
+        </div>
+
+        <div class="sensitive-overlay">
+          <div class="sensitive-badge">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="2">
+              <path stroke-linecap="round" stroke-linejoin="round"
+                d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7A9.97 9.97 0 014.02 8.971m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21"/>
+            </svg>
+            <span>Contenu sensible</span>
+          </div>
+        </div>
+      </a>
+
+   
+
+    </div>
+
+    <div class="page-footer">
+      <a href="https://linkscale.to/report" target="_blank" rel="noopener noreferrer">Report</a>
+      <a href="https://linkscale.to/terms" target="_blank" rel="noopener noreferrer">Terms</a>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  // ── Countdown (ne tourne que si le bandeau existe dans la page) ──
+  (function() {
+    const hEl = document.getElementById('cd-h');
+    const mEl = document.getElementById('cd-m');
+    const sEl = document.getElementById('cd-s');
+    if (!hEl || !mEl || !sEl) return;
+
+    const endTime = Date.now() + (24 * 3600 + 0 * 60) * 1000;
+    function pad(n) { return String(n).padStart(2, '0'); }
+
+    function tick() {
+      const diff = Math.max(0, endTime - Date.now());
+      hEl.textContent = pad(Math.floor(diff / 3600000));
+      mEl.textContent = pad(Math.floor((diff % 3600000) / 60000));
+      sEl.textContent = pad(Math.floor((diff % 60000) / 1000));
+      if (diff > 0) setTimeout(tick, 200);
+    }
+    tick();
+  })();
+
+  // ── Cartes sensibles : contenu visible par défaut ──
+  // 1er clic  : la carte se floute + badge "Contenu sensible" apparaît
+  // 2e clic   : le lien s'ouvre dans un nouvel onglet
+  // Si on clique sur une autre carte pendant qu'une est floutée,
+  // la précédente redevient visible et la nouvelle se floute.
+  (function() {
+    const cards = document.querySelectorAll('.sensitive-card');
+    let currentlyRevealed = null;
+
+    cards.forEach(function(card) {
+      card.addEventListener('click', function(e) {
+        // Cas 1 : cette carte est déjà floutée → on laisse le lien s'ouvrir
+        if (card.classList.contains('revealed')) {
+          const label = card.getAttribute('data-label') || 'link';
+          if (typeof fbq !== 'undefined') {
+            fbq('track', 'Lead', {
+              content_name: label,
+              content_category: 'sensitive_content'
+            });
+          }
+          card.classList.remove('revealed');
+          currentlyRevealed = null;
+          return; // navigation normale (target="_blank")
+        }
+
+        // Cas 2 : une autre carte est floutée → on la défloute
+        if (currentlyRevealed && currentlyRevealed !== card) {
+          currentlyRevealed.classList.remove('revealed');
+        }
+
+        // Cas 3 : on floute la carte cliquée et on bloque la navigation
+        e.preventDefault();
+        card.classList.add('revealed');
+        currentlyRevealed = card;
+      });
+    });
+  })();
+</script>
+
+</body>
+</html>
