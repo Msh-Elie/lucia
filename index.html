@@ -53,9 +53,10 @@
       min-height: 80vh;
     }
 
+    /* ─── Cover agrandie (295 → 320) ─── */
     .cover {
       position: relative;
-      height: 295px;
+      height: 320px;
       overflow: hidden;
       line-height: 0;
     }
@@ -295,6 +296,14 @@
       will-change: filter, transform;
     }
 
+    /* ─── Zoom léger pour l'image secret.jpeg ─── */
+    .link-card img.card-bg.zoom-110 {
+      transform: scale(1.1);
+    }
+    .link-card.revealed img.card-bg.zoom-110 {
+      transform: scale(1.25);
+    }
+
     .link-card .card-gradient {
       position: absolute;
       inset: 0;
@@ -525,7 +534,7 @@
         </div>
       </a>
 
-      <!-- Card 3: Secret Garden (sans animation) -->
+      <!-- Card 3: Secret Garden (sans animation, image agrandie) -->
       <a
         class="link-card sensitive-card"
         href="https://www.amateurx.com/?ACADID=18266374#/sedcard/Karen0"
@@ -533,7 +542,7 @@
         data-label="Mym"
       >
         <img
-          class="card-bg"
+          class="card-bg zoom-110"
           src="assert/secret.jpeg"
           alt="Secret Garden"
           style="object-position: center 100%;"
@@ -589,17 +598,12 @@
   })();
 
   // ── Cartes sensibles : contenu visible par défaut ──
-  // 1er clic  : la carte se floute + badge "Contenu sensible" apparaît
-  // 2e clic   : le lien s'ouvre dans un nouvel onglet
-  // Si on clique sur une autre carte pendant qu'une est floutée,
-  // la précédente redevient visible et la nouvelle se floute.
   (function() {
     const cards = document.querySelectorAll('.sensitive-card');
     let currentlyRevealed = null;
 
     cards.forEach(function(card) {
       card.addEventListener('click', function(e) {
-        // Cas 1 : cette carte est déjà floutée → on laisse le lien s'ouvrir
         if (card.classList.contains('revealed')) {
           const label = card.getAttribute('data-label') || 'link';
           if (typeof fbq !== 'undefined') {
@@ -610,15 +614,13 @@
           }
           card.classList.remove('revealed');
           currentlyRevealed = null;
-          return; // navigation normale (target="_blank")
+          return;
         }
 
-        // Cas 2 : une autre carte est floutée → on la défloute
         if (currentlyRevealed && currentlyRevealed !== card) {
           currentlyRevealed.classList.remove('revealed');
         }
 
-        // Cas 3 : on floute la carte cliquée et on bloque la navigation
         e.preventDefault();
         card.classList.add('revealed');
         currentlyRevealed = card;
